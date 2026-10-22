@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">BookAccounting</string>
+    <string name="catalog_title">Учет книг</string>
+    <string name="catalog_subtitle">Книги, авторы и издательства</string>
+
+    <string name="section_books">Книги</string>
+    <string name="section_authors">Авторы</string>
+    <string name="section_publishers">Издательства</string>
+
+    <string name="books_description">Здесь будет список книг с поиском, добавлением и редактированием.</string>
+    <string name="authors_description">Здесь будет список авторов и управление их данными.</string>
+    <string name="publishers_description">Здесь будет список издательств и управление их данными.</string>
+
+    <string name="server_not_connected">Подключение к серверу еще не настроено.</string>
+    <string name="catalog_result_count">Показано: %1$d из %2$d</string>
+</resources>

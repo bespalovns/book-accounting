@@ -1,0 +1,23 @@
+# Пароли и локальные настройки
+.env
+.env.*
+!.env.example
+local.properties
+*.jks
+*.keystore
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Android и IDE
+.idea/
+.gradle/
+**/build/
+*.apk
+*.aab
+
+# Локальные выгрузки базы
+cloud-backup.sql

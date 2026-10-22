@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Учет книг</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='styles.css') }}"
+    >
+
+    <script
+        src="{{ url_for('static', filename='app.js') }}"
+        defer
+    ></script>
+</head>
+<body>
+<main class="container">
+    <header class="page-header">
+        <div>
+            <h1>Учет книг</h1>
+            <p class="subtitle">
+                Книги, авторы и издательства
+            </p>
+        </div>
+    </header>
+
+    <nav class="tabs" aria-label="Разделы приложения">
+        <button
+            type="button"
+            class="tab active"
+            data-entity="books"
+            aria-pressed="true"
+        >
+            Книги
+        </button>
+
+        <button
+            type="button"
+            class="tab"
+            data-entity="authors"
+            aria-pressed="false"
+        >
+            Авторы
+        </button>
+
+        <button
+            type="button"
+            class="tab"
+            data-entity="publishers"
+            aria-pressed="false"
+        >
+            Издательства
+        </button>
+    </nav>
+
+    <p id="message" class="message" role="status" hidden></p>
+
+    <section class="card">
+        <h2 id="form-title">Добавить книгу</h2>
+
+        <p id="form-hint" class="hint"></p>
+
+        <form id="record-form">
+            <div id="form-fields" class="form-grid"></div>
+
+            <div class="actions">
+                <button id="save-button" type="submit">
+                    Добавить
+                </button>
+
+                <button
+                    id="cancel-button"
+                    class="secondary"
+                    type="button"
+                    hidden
+                >
+                    Отменить редактирование
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="section-header">
+            <h2 id="list-title">Книги</h2>
+
+            <button
+                id="refresh-button"
+                class="secondary"
+                type="button"
+            >
+                Обновить
+            </button>
+        </div>
+
+        <form id="search-form" class="search-bar">
+            <div class="search-field">
+                <label for="search-input">Поиск книги</label>
+                <input
+                    id="search-input"
+                    type="search"
+                    maxlength="250"
+                    placeholder="Название, ISBN, имя или фамилия автора"
+                >
+            </div>
+
+            <div>
+                <label for="status-filter">Наличие</label>
+                <select id="status-filter">
+                    <option value="">Все книги</option>
+                    <option value="true">В наличии</option>
+                    <option value="false">Нет в наличии</option>
+                </select>
+            </div>
+
+            <button type="submit">Найти</button>
+
+            <button
+                id="reset-search-button"
+                class="secondary"
+                type="button"
+            >
+                Сбросить
+            </button>
+        </form>
+
+        <p id="list-state" class="hint"></p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

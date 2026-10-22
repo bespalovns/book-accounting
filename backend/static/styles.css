@@ -1,0 +1,427 @@
+/* Палитра */
+:root {
+    --page-bg: #dcebd5;
+    --surface: #fffef5;
+    --text: #000000;
+    --text-muted: #62776a;
+
+    --green-primary: #426e52;
+    --green-hover: #345b42;
+    --green-active: #294b36;
+
+    --border: #d5e3d2;
+    --input-border: #c8d9c3;
+    --input-bg: #fcfefb;
+
+    --table-header: #fff5cf;
+    --table-header-active: #e2edcb;
+    --table-row-even: #edf5e5;
+    --table-row-hover: #fff4cf;
+}
+
+/* Общие настройки */
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    min-height: 100%;
+    background: var(--page-bg);
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text);
+    background: var(--page-bg);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 32px auto;
+    padding: 0 24px;
+}
+
+/* Заголовок страницы */
+.page-header {
+    margin-bottom: 24px;
+}
+
+.eyebrow {
+    color: var(--green-primary);
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+h1 {
+    margin: 8px 0;
+    font-size: 32px;
+    color: #294638;
+}
+
+h2 {
+    margin: 0 0 20px;
+    font-size: 22px;
+}
+
+.subtitle,
+.hint {
+    line-height: 1.5;
+}
+
+.subtitle {
+    color: var(--text-muted);
+}
+
+/* Кнопки */
+button {
+    padding: 11px 17px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: var(--green-primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: var(--green-hover);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--green-primary);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Второстепенные кнопки */
+button.secondary {
+    background: #edf5e9;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+button.secondary:hover:not(:disabled) {
+    background: #e4f0df;
+}
+
+/* Вкладки разделов */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+button.tab {
+    background: var(--green-primary);
+    color: #ffffff;
+    border-color: var(--green-primary);
+}
+
+button.tab:hover:not(:disabled) {
+    background: var(--green-hover);
+    border-color: var(--green-hover);
+}
+
+button.tab.active,
+button.tab.active:hover:not(:disabled) {
+    background: var(--green-active);
+    color: #ffffff;
+    border-color: var(--green-active);
+}
+
+/* Кнопки удаления */
+button.danger {
+    background: #fff0e8;
+    color: #843f2d;
+    border-color: #efd3c5;
+}
+
+button.danger:hover:not(:disabled) {
+    background: #fbe2d5;
+}
+
+/* Панели */
+.card {
+    padding: 26px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgb(49 83 56 / 5%);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+/* Формы */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.field {
+    min-width: 0;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text);
+    font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #72816f;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #d4e8c9;
+    border-color: #719369;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--green-primary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    margin-top: 20px;
+}
+
+.checkbox-label input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+/* Поиск */
+.search-bar {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.search-field {
+    flex: 1;
+    min-width: 240px;
+}
+
+/* Таблицы */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text);
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #e0e8d9;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background: var(--table-header);
+    white-space: nowrap;
+}
+
+td {
+    min-width: 70px;
+    max-width: 360px;
+    overflow-wrap: anywhere;
+}
+
+tbody tr:nth-child(odd) {
+    background: var(--surface);
+}
+
+tbody tr:nth-child(even) {
+    background: var(--table-row-even);
+}
+
+tbody tr:hover {
+    background: var(--table-row-hover);
+}
+
+/* Сортировка */
+th[aria-sort] {
+    background: var(--table-header-active);
+}
+
+th .sort-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+}
+
+th .sort-button:hover:not(:disabled) {
+    background: transparent;
+    color: var(--text);
+}
+
+th .sort-button:focus-visible {
+    outline: 2px solid var(--green-primary);
+    outline-offset: 4px;
+}
+
+/* Действия в строке таблицы */
+.row-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.row-actions button {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* Наличие книги */
+.badge {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #fff0c2;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.badge.available {
+    background: #e0efd7;
+}
+
+/* Сообщения */
+.message {
+    padding: 15px 18px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+.message.success {
+    background: #e4f2dd;
+    color: #31552b;
+    border-color: #c9dfbe;
+}
+
+.message.error {
+    background: #fff0e8;
+    color: #843f2d;
+    border-color: #efd3c5;
+}
+
+/* Подвал */
+footer {
+    padding-bottom: 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Планшеты */
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Телефоны */
+@media (max-width: 600px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-field {
+        min-width: 0;
+    }
+
+    .search-bar > * {
+        width: 100%;
+    }
+}

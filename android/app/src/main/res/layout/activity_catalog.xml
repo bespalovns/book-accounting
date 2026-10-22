@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/catalogRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DCEBD5"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/catalogTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/catalogStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#FFF5CF"
+            android:padding="12dp"
+            android:text="Загрузка…"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/catalogRefresh"
+            style="@style/CatalogButton"
+            android:text="Обновить список" />
+
+        <LinearLayout
+            android:id="@+id/catalogForm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#FFFEF5"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/catalogFormTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Новая запись"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Форма издательства -->
+            <LinearLayout
+                android:id="@+id/publisherFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/publisherName"
+                    style="@style/CatalogInput"
+                    android:hint="Название издательства"
+                    android:maxLength="200" />
+
+                <EditText
+                    android:id="@+id/publisherAddress"
+                    style="@style/CatalogInput"
+                    android:hint="Адрес"
+                    android:maxLength="300" />
+
+                <EditText
+                    android:id="@+id/publisherSite"
+                    style="@style/CatalogInput"
+                    android:hint="Сайт: https://example.com — необязательно"
+                    android:inputType="textUri"
+                    android:maxLength="300" />
+
+            </LinearLayout>
+
+            <!-- Форма книги -->
+            <LinearLayout
+                android:id="@+id/bookFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/bookTitle"
+                    style="@style/CatalogInput"
+                    android:hint="Название книги"
+                    android:maxLength="250" />
+
+                <TextView
+                    style="@style/CatalogLabel"
+                    android:text="Автор" />
+
+                <Spinner
+                    android:id="@+id/bookAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:saveEnabled="false"
+                    android:spinnerMode="dropdown" />
+
+                <TextView
+                    style="@style/CatalogLabel"
+                    android:text="Издательство" />
+
+                <Spinner
+                    android:id="@+id/bookPublisher"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:saveEnabled="false"
+                    android:spinnerMode="dropdown" />
+
+                <EditText
+                    android:id="@+id/bookIsbn"
+                    style="@style/CatalogInput"
+                    android:hint="ISBN"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="40" />
+
+                <EditText
+                    android:id="@+id/bookYear"
+                    style="@style/CatalogInput"
+                    android:hint="Год издания"
+                    android:inputType="number"
+                    android:maxLength="4" />
+
+                <EditText
+                    android:id="@+id/bookPages"
+                    style="@style/CatalogInput"
+                    android:hint="Количество страниц"
+                    android:inputType="number"
+                    android:maxLength="10" />
+
+                <EditText
+                    android:id="@+id/bookPrice"
+                    style="@style/CatalogInput"
+                    android:hint="Цена"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/bookAbstract"
+                    style="@style/CatalogInput"
+                    android:gravity="top|start"
+                    android:hint="Аннотация — необязательно"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="10000"
+                    android:minLines="3"
+                    android:singleLine="false" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/bookHardcover"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Твердый переплет"
+                    android:textColor="#000000" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/bookAvailable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="В наличии"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/catalogSave"
+                style="@style/CatalogButton"
+                android:text="Сохранить" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/catalogNew"
+                style="@style/CatalogButton"
+                android:text="Очистить форму / новая запись" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/catalogDelete"
+                style="@style/CatalogButton"
+                android:text="Удалить выбранную запись"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:text="Список записей"
+            android:textColor="#000000"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/catalogSearch"
+            style="@style/CatalogInput"
+            android:hint="Поиск по названию, автору, издательству, ISBN"
+            android:inputType="text"
+            android:imeOptions="actionSearch" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/catalogAvailableOnly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Только в наличии"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/catalogResultCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/catalogRows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,7 +1,6 @@
-# Пароли и локальные настройки
+# РџР°СЂРѕР»Рё Рё Р»РѕРєР°Р»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё
 .env
 .env.*
-!.env.example
 local.properties
 *.jks
 *.keystore
@@ -12,12 +11,14 @@ venv/
 __pycache__/
 *.pyc
 
-# Android и IDE
+# Android Рё IDE
 .idea/
 .gradle/
 **/build/
 *.apk
 *.aab
 
-# Локальные выгрузки базы
-cloud-backup.sql
+# Р›РѕРєР°Р»СЊРЅС‹Рµ РІС‹РіСЂСѓР·РєРё Р±Р°Р·С‹
+cloud-backup*.sql
+book-accounting-browser.sql
+*.backup

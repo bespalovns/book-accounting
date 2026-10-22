@@ -30,6 +30,87 @@
             android:textColor="#000000"
             android:textSize="16sp" />
 
+        <!-- Поля входа -->
+        <LinearLayout
+            android:id="@+id/authPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="#FFFEF5"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Вход в приложение"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/loginInput"
+                android:text="Логин"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/loginInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:backgroundTint="#426E52"
+                android:hint="Введите логин"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="textVisiblePassword"
+                android:saveEnabled="false"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#54634D"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:labelFor="@id/passwordInput"
+                android:text="Пароль"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/passwordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:backgroundTint="#426E52"
+                android:hint="Введите пароль"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:saveEnabled="false"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#54634D"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Введите данные входа в приложение, затем выберите раздел."
+                android:textColor="#000000"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Кнопки разделов -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/booksButton"
             android:layout_width="match_parent"
@@ -65,6 +146,7 @@
             android:textSize="16sp"
             app:backgroundTint="#426E52" />
 
+        <!-- Информация и состояние подключения -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,7 +159,7 @@
                 android:id="@+id/sectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/section_books"
+                android:text="Управление каталогом"
                 android:textColor="#000000"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -87,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="@string/books_description"
+                android:text="Сайт и приложение используют общую базу данных."
                 android:textColor="#000000"
                 android:textSize="16sp" />
 
@@ -98,7 +180,7 @@
                 android:layout_marginTop="20dp"
                 android:background="#FFF5CF"
                 android:padding="12dp"
-                android:text="@string/server_not_connected"
+                android:text="Введите логин и пароль, затем выберите раздел."
                 android:textColor="#000000"
                 android:textSize="14sp" />
 

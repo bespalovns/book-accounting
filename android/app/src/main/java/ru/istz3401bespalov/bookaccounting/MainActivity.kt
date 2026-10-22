@@ -1,242 +1,147 @@
 package ru.istz3401bespalov.bookaccounting
 
-import android.content.res.ColorStateList
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import org.json.JSONArray
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.util.concurrent.Executors
-import android.content.Intent
-
+import android.view.View
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var sectionTitle: TextView
-    private lateinit var sectionDescription: TextView
+    private lateinit var loginInput: EditText
+    private lateinit var passwordInput: EditText
     private lateinit var dataText: TextView
-    private lateinit var sectionButtons: List<AppCompatButton>
-
-    private var selectedSection = 0
-
-    // Запросы выполняются вне главного потока интерфейса.
-    private val executor = Executors.newSingleThreadExecutor()
-
-    // Помогает игнорировать ответ от ранее выбранного раздела.
-    private var requestVersion = 0
-
-    companion object {
-        private const val KEY_SELECTED_SECTION = "selected_section"
-    }
+    private lateinit var authPanel: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        authPanel = findViewById(R.id.authPanel)
 
         ViewCompat.setOnApplyWindowInsetsListener(
             findViewById(R.id.main)
         ) { view, insets ->
-            val systemBars = insets.getInsets(
+            val bars = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars()
             )
 
+            val keyboard = insets.getInsets(
+                WindowInsetsCompat.Type.ime()
+            )
+
             view.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
+                bars.left,
+                bars.top,
+                bars.right,
+                maxOf(bars.bottom, keyboard.bottom)
             )
 
             insets
         }
 
-        sectionTitle = findViewById(R.id.sectionTitle)
-        sectionDescription = findViewById(R.id.sectionDescription)
+        loginInput = findViewById(R.id.loginInput)
+        passwordInput = findViewById(R.id.passwordInput)
         dataText = findViewById(R.id.dataText)
 
-        sectionButtons = listOf(
-            findViewById<AppCompatButton>(R.id.booksButton),
-            findViewById<AppCompatButton>(R.id.authorsButton),
-            findViewById<AppCompatButton>(R.id.publishersButton)
-        )
+        findViewById<TextView>(R.id.sectionTitle).text =
+            "Управление каталогом"
 
-        sectionButtons.forEachIndexed { index, button ->
-            button.setOnClickListener {
-                when (index) {
-                    1 -> {
-                        startActivity(
-                            Intent(this, AuthorsActivity::class.java)
-                        )
-                    }
+        findViewById<TextView>(R.id.sectionDescription).text =
+            "Сайт и приложение используют общую базу данных."
 
-                    else -> {
-                        val entity = if (index == 0) {
-                            "books"
-                        } else {
-                            "publishers"
-                        }
-
-                        startActivity(
-                            Intent(this, CatalogActivity::class.java)
-                                .putExtra("entity", entity)
-                        )
-                    }
-                }
+        findViewById<AppCompatButton>(R.id.booksButton)
+            .setOnClickListener {
+                openSection("books")
             }
-        }
 
-        selectedSection = savedInstanceState
-            ?.getInt(KEY_SELECTED_SECTION, 0)
-            ?.coerceIn(0, 2)
-            ?: 0
+        findViewById<AppCompatButton>(R.id.authorsButton)
+            .setOnClickListener {
+                openSection("authors")
+            }
 
-        sectionTitle.text = "Управление каталогом"
-        sectionDescription.text =
-            "Выберите раздел для просмотра, добавления и редактирования записей."
-        dataText.text = "Книги, авторы и издательства используют общую базу данных."
+        findViewById<AppCompatButton>(R.id.publishersButton)
+            .setOnClickListener {
+                openSection("publishers")
+            }
     }
 
-    private fun showSection(index: Int) {
-        selectedSection = index
+    override fun onResume() {
+        super.onResume()
 
-        sectionTitle.setText(
-            when (index) {
-                1 -> R.string.section_authors
-                2 -> R.string.section_publishers
-                else -> R.string.section_books
-            }
-        )
+        val authenticated = ApiClient.isAuthenticated()
 
-        sectionDescription.text =
-            "Для обновления списка нажмите кнопку раздела."
-
-        sectionButtons.forEachIndexed { buttonIndex, button ->
-            val isSelected = buttonIndex == index
-
-            val color = if (isSelected) {
-                "#294B36"
-            } else {
-                "#426E52"
-            }
-
-            button.supportBackgroundTintList =
-                ColorStateList.valueOf(Color.parseColor(color))
-
-            button.isSelected = isSelected
+        authPanel.visibility = if (authenticated) {
+            View.GONE
+        } else {
+            View.VISIBLE
         }
 
-        loadData(index)
-    }
-
-    private fun loadData(section: Int) {
-        val entity = when (section) {
-            1 -> "authors"
-            2 -> "publishers"
-            else -> "books"
-        }
-
-        requestVersion += 1
-        val currentRequest = requestVersion
-
-        dataText.text = "Загрузка…"
-
-        executor.execute {
-            // Пропускаем устаревшие задания, ожидавшие в очереди.
-            if (Thread.currentThread().isInterrupted) {
-                return@execute
-            }
-
-            val result = try {
-                val items = ApiClient.getList(entity)
-                formatItems(items, section)
-            } catch (error: SocketTimeoutException) {
-                "Сервер не ответил вовремя. Повторите загрузку."
-            } catch (error: ConnectException) {
-                "Не удалось подключиться к серверу.\n\n" +
-                        "Проверьте, что app.py запущен в PyCharm " +
-                        "и использует порт 5000."
-            } catch (error: Exception) {
-                "Не удалось загрузить данные.\n\n" +
-                        (error.message ?: "Неизвестная ошибка")
-            }
-
-            runOnUiThread {
-                if (
-                    !isDestroyed &&
-                    !isFinishing &&
-                    currentRequest == requestVersion
-                ) {
-                    dataText.text = result
-                }
-            }
+        dataText.text = if (authenticated) {
+            "Вы вошли в приложение. Выберите раздел."
+        } else {
+            "Введите данные входа в приложение, затем выберите раздел. " +
+                    "Первое подключение после простоя может занять около минуты."
         }
     }
 
-    private fun formatItems(items: JSONArray, section: Int): String {
-        if (items.length() == 0) {
-            return "Записей пока нет."
+    private fun prepareCredentials(): Boolean {
+        val username = loginInput.text.toString().trim()
+        val password = passwordInput.text.toString()
+
+        loginInput.error = null
+        passwordInput.error = null
+
+        // При возврате или повороте можно использовать данные из памяти.
+        if (
+            username.isEmpty() &&
+            password.isEmpty() &&
+            ApiClient.hasCredentials()
+        ) {
+            return true
         }
 
-        return (0 until items.length()).joinToString("\n\n") { index ->
-            val item = items.getJSONObject(index)
-
-            when (section) {
-                1 -> {
-                    val lastName = item.optString("last_name")
-                    val firstName = item.optString("first_name")
-
-                    "${index + 1}. $lastName $firstName"
-                }
-
-                2 -> {
-                    val name = item.optString("name_publisher")
-                    val address = item.optString("address")
-
-                    "${index + 1}. $name\nАдрес: $address"
-                }
-
-                else -> {
-                    val title = item.optString("title")
-                    val author = item.optString("author_name")
-                    val publisher = item.optString("publisher_name")
-                    val year = item.optInt("year_publish")
-                    val price = item.optString("price")
-                    val status = if (item.optBoolean("status")) {
-                        "В наличии"
-                    } else {
-                        "Нет в наличии"
-                    }
-
-                    """
-                    ${index + 1}. $title
-                    Автор: $author
-                    Издательство: $publisher
-                    Год: $year
-                    Цена: $price
-                    Статус: $status
-                    """.trimIndent()
-                }
-            }
+        if (username.isBlank()) {
+            loginInput.error = "Введите логин"
+            loginInput.requestFocus()
+            return false
         }
+
+        if (':' in username) {
+            loginInput.error = "Логин не должен содержать двоеточие"
+            loginInput.requestFocus()
+            return false
+        }
+
+        if (password.isEmpty()) {
+            passwordInput.error = "Введите пароль"
+            passwordInput.requestFocus()
+            return false
+        }
+
+        ApiClient.setCredentials(username, password)
+
+        loginInput.text.clear()
+        passwordInput.text.clear()
+
+        return true
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(KEY_SELECTED_SECTION, selectedSection)
-        super.onSaveInstanceState(outState)
-    }
+    private fun openSection(entity: String) {
+        if (!prepareCredentials()) return
 
-    override fun onDestroy() {
-        // Ограниченные по времени запросы завершатся,
-        // но результат уже не попадет в закрытый экран.
-        requestVersion += 1
-        executor.shutdownNow()
-        super.onDestroy()
+        val screen = if (entity == "authors") {
+            Intent(this, AuthorsActivity::class.java)
+        } else {
+            Intent(this, CatalogActivity::class.java)
+                .putExtra("entity", entity)
+        }
+
+        startActivity(screen)
     }
 }

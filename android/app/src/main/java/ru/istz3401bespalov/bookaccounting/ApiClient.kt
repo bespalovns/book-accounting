@@ -1,5 +1,6 @@
 package ru.istz3401bespalov.bookaccounting
 
+import android.util.Base64
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -8,7 +9,52 @@ import java.net.URL
 
 object ApiClient {
 
-    private const val BASE_URL = "http://10.0.2.2:5000"
+    private const val BASE_URL =
+        "https://book-accounting.onrender.com"
+
+    // Данные входа хранятся только в памяти приложения.
+    @Volatile
+    private var authorizationHeader: String? = null
+
+    // Данные входа, которые уже были приняты сервером.
+    @Volatile
+    private var verifiedAuthorizationHeader: String? = null
+
+    fun hasCredentials(): Boolean {
+        return authorizationHeader != null
+    }
+
+    fun isAuthenticated(): Boolean {
+        val current = authorizationHeader
+
+        return current != null &&
+                current == verifiedAuthorizationHeader
+    }
+
+    fun setCredentials(username: String, password: String) {
+        require(username.isNotBlank()) {
+            "Введите логин."
+        }
+
+        require(':' !in username) {
+            "Логин не должен содержать двоеточие."
+        }
+
+        require(password.isNotEmpty()) {
+            "Введите пароль."
+        }
+
+        val credentials = "$username:$password"
+            .toByteArray(Charsets.UTF_8)
+
+        // Новые данные ещё не проверены сервером.
+        verifiedAuthorizationHeader = null
+
+        authorizationHeader = "Basic " + Base64.encodeToString(
+            credentials,
+            Base64.NO_WRAP
+        )
+    }
 
     fun getList(entity: String): JSONArray {
         return JSONArray(request("GET", entity))
@@ -28,7 +74,11 @@ object ApiClient {
     }
 
     fun delete(entity: String, id: Int) {
-        request("DELETE", entity, id)
+        request(
+            method = "DELETE",
+            entity = entity,
+            id = id
+        )
     }
 
     private fun request(
@@ -37,21 +87,44 @@ object ApiClient {
         id: Int? = null,
         data: JSONObject? = null
     ): String {
-        require(entity in setOf("books", "authors", "publishers"))
+        require(entity in setOf("books", "authors", "publishers")) {
+            "Неизвестный раздел."
+        }
 
-        val path = if (id == null) entity else "$entity/$id"
+        val authorization = authorizationHeader
+            ?: throw IOException(
+                "Вернитесь на главный экран и введите логин и пароль."
+            )
+
+        val path = if (id == null) {
+            entity
+        } else {
+            "$entity/$id"
+        }
 
         val connection = URL("$BASE_URL/api/$path")
             .openConnection() as HttpURLConnection
 
         try {
             connection.requestMethod = method
-            connection.connectTimeout = 10_000
-            connection.readTimeout = 15_000
-            connection.setRequestProperty("Accept", "application/json")
+            connection.connectTimeout = 20_000
+            connection.readTimeout = 120_000
+            connection.instanceFollowRedirects = false
+            connection.useCaches = false
+
+            connection.setRequestProperty(
+                "Accept",
+                "application/json"
+            )
+
+            connection.setRequestProperty(
+                "Authorization",
+                authorization
+            )
 
             if (data != null) {
                 connection.doOutput = true
+
                 connection.setRequestProperty(
                     "Content-Type",
                     "application/json; charset=UTF-8"
@@ -67,8 +140,19 @@ object ApiClient {
             val status = connection.responseCode
 
             if (status == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                if (authorizationHeader == authorization) {
+                    verifiedAuthorizationHeader = null
+                }
+
                 throw IOException(
-                    "Сервер требует входа. Необходимо настроить авторизацию."
+                    "Неверный логин или пароль. " +
+                            "Вернитесь на главный экран и введите данные заново."
+                )
+            }
+
+            if (status in 300..399) {
+                throw IOException(
+                    "Сервер перенаправляет запрос. Проверьте адрес сервера."
                 )
             }
 
@@ -89,8 +173,16 @@ object ApiClient {
                 }.getOrDefault("")
 
                 throw IOException(
-                    message.ifBlank { "Ошибка сервера: HTTP $status" }
+                    message.ifBlank {
+                        "Ошибка сервера: HTTP $status"
+                    }
                 )
+            }
+
+            // Сервер успешно выполнил защищённый запрос.
+            // Не подтверждаем устаревшие данные, если их уже изменили.
+            if (authorizationHeader == authorization) {
+                verifiedAuthorizationHeader = authorization
             }
 
             return response
